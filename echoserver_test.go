@@ -12,17 +12,12 @@ import (
 )
 
 func TestRun(t *testing.T) {
-	exit := make(chan int)
-
 	echo := func(port int) {
-		go func() {
-			server := &Server{Host: "localhost", Port: port}
-			err := server.Run()
-			if err != nil {
-				t.Error("Error")
-			}
-		}()
-		<-exit
+		server := &Server{Host: "localhost", Port: port}
+		err := server.Run()
+		if err != nil {
+			t.Error("Error")
+		}
 	}
 
 	server, err := tcptest.Start(echo, 30*time.Second)
@@ -41,8 +36,4 @@ func TestRun(t *testing.T) {
 	if res != "test hogehoge\n" {
 		t.Error("Wrong Response")
 	}
-
-	exit <- 1
-
-	server.Wait()
 }
